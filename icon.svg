@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#06245c"/><stop offset=".55" stop-color="#0b6dff"/><stop offset="1" stop-color="#7048f7"/></linearGradient><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffd84d"/><stop offset="1" stop-color="#f3a900"/></linearGradient></defs>
+<rect width="512" height="512" rx="118" fill="url(#bg)"/>
+<circle cx="386" cy="118" r="74" fill="#fff" opacity=".08"/><circle cx="110" cy="405" r="95" fill="#fff" opacity=".06"/>
+<path d="M105 166 256 92l151 74-151 76z" fill="url(#gold)" stroke="#fff" stroke-width="10"/>
+<path d="M145 184v116c31 31 70 48 111 48s80-17 111-48V184l-111 56z" fill="#fff"/>
+<path d="M178 236v70c24 16 50 24 78 24s54-8 78-24v-70l-78 39z" fill="#eaf1ff"/>
+<circle cx="256" cy="150" r="20" fill="#06245c"/>
+<path d="M93 355h326" stroke="#ffd84d" stroke-width="18" stroke-linecap="round"/>
+<path d="M137 390h238" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".9"/>
+<text x="256" y="446" text-anchor="middle" font-family="Arial,sans-serif" font-weight="900" font-size="42" fill="#fff">LEARNOVA</text>
+</svg>

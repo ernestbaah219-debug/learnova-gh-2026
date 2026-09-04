@@ -1,0 +1,18 @@
+{
+  "name": "Learnova GH \u2014 Ghana Learning Platform",
+  "short_name": "Learnova GH",
+  "description": "Class-aware Ghana learning, textbook lessons, practical examples, quizzes, AI exams and AI tutoring.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#6c5ce7",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
