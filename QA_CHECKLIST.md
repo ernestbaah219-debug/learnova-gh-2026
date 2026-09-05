@@ -6,7 +6,7 @@
 - Open lesson and practice
 - Submit quiz/exam answers
 - Confirm mastery and mistakes update
-- Open AI Tutor 6.0 with current lesson context
+- Open AI Tutor 7.0 with current lesson context
 - Save lesson and check revision
 - Test offline/PWA behavior
 

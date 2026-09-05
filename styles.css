@@ -98,43 +98,5 @@ body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;bac
 /* Learnova Final Command Center */
 .final-command-grid .card{min-height:150px}.mini-health{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.mini-health span{background:var(--soft);padding:10px;border-radius:10px;font-size:12px}.mini-health b{display:block;font-size:18px;margin-top:3px}@media(max-width:900px){.final-command-grid{grid-template-columns:1fr!important}.mini-health{grid-template-columns:1fr 1fr 1fr}}
 
-/* Welcome landing experience */
-.welcome-hero{margin:18px auto 22px;max-width:1180px;display:grid;grid-template-columns:1.55fr .75fr;gap:22px;padding:34px;border-radius:28px;color:#fff;background:linear-gradient(135deg,rgba(20,56,150,.96),rgba(91,48,177,.93));box-shadow:0 22px 55px rgba(22,31,76,.22)}.welcome-copy h1{font-size:clamp(2rem,4vw,3.65rem);line-height:1.04;margin:0 0 14px}.welcome-kicker{font-size:.76rem;font-weight:800;letter-spacing:.13em;opacity:.86;margin-bottom:10px}.welcome-copy>p{font-size:1.04rem;line-height:1.65;max-width:720px;margin:0 0 22px;color:rgba(255,255,255,.9)}.welcome-actions{display:flex;gap:10px;flex-wrap:wrap}.welcome-actions .btn{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.12);color:#fff}.welcome-actions .btn.primary{background:#fff;color:#24459b}.welcome-trust{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.welcome-trust span{padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.11);font-size:.8rem}.welcome-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:22px;padding:22px;align-self:center}.welcome-card-title{font-weight:800;font-size:1.05rem;margin-bottom:14px}.journey-step{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.14)}.journey-step:last-child{border-bottom:0}.journey-step b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:#29479b;font-size:.82rem}.welcome-features{max-width:1180px;margin:0 auto 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.welcome-features article{padding:22px;border-radius:20px;background:rgba(255,255,255,.94);border:1px solid rgba(30,60,120,.1);box-shadow:0 10px 28px rgba(20,30,70,.08)}.feature-icon{font-size:1.7rem;margin-bottom:9px}.welcome-features h3{margin:0 0 8px}.welcome-features p{margin:0;line-height:1.55;font-size:.88rem;opacity:.78}.welcome-levels{max-width:1180px;margin:0 auto 30px;padding:24px;border-radius:22px;background:rgba(255,255,255,.9);border:1px solid rgba(30,60,120,.1)}.welcome-levels h2{margin:0 0 6px}.welcome-levels p{margin:0 0 16px;opacity:.72}.level-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.level-grid div{padding:17px;border-radius:16px;background:rgba(50,85,180,.07)}.level-grid strong,.level-grid span{display:block}.level-grid strong{margin-bottom:5px}.level-grid span{font-size:.86rem;opacity:.7}@media(max-width:900px){.welcome-hero{grid-template-columns:1fr;padding:25px}.welcome-features{grid-template-columns:repeat(2,1fr)}}@media(max-width:600px){.welcome-hero{margin:10px 0 16px;border-radius:20px;padding:21px}.welcome-features,.level-grid{grid-template-columns:1fr}}
-
-/* Prevent the public welcome section from occupying dashboard space after login */
-.welcome-hero.hidden,.welcome-features.hidden,.welcome-levels.hidden{display:none!important}
-
-/* Final Welcome overlay fix: never occupies dashboard layout space */
-#welcomeHero,
-.welcome-hero,
-.welcome-features,
-.welcome-levels {
-  box-sizing: border-box;
-}
-#welcomeScreen {
-  position: fixed;
-  inset: 0;
-  z-index: 99999;
-  overflow-y: auto;
-  background: #f5f7ff;
-  padding: 24px;
-}
-#welcomeScreen .welcome-inner {
-  max-width: 1180px;
-  margin: 0 auto;
-}
-body.learnova-welcome-open {
-  overflow: hidden !important;
-}
-body.learnova-welcome-open #app {
-  visibility: hidden !important;
-}
-body.learnova-welcome-open #welcomeScreen {
-  visibility: visible !important;
-}
-body:not(.learnova-welcome-open) #welcomeScreen {
-  display: none !important;
-}
-@media (max-width: 600px) {
-  #welcomeScreen { padding: 12px; }
-}
+.tutor-progress{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 8px 24px rgba(30,40,80,.06)}
+.tutor-progress>div:first-child{flex:1}.tutor-progress b{display:block}.tutor-progress span{display:block;color:var(--muted);font-size:.9rem;margin-top:4px}.tutor-progress-metrics{display:flex;gap:12px}.tutor-progress-metrics span{min-width:72px;text-align:center;padding:9px 10px;border-radius:12px;background:var(--soft)}.tutor-progress-metrics b{font-size:1.1rem;color:var(--text)}.tutor-progress-metrics small{font-size:.72rem}@media(max-width:700px){.tutor-progress{display:block}.tutor-progress-metrics{margin-top:12px}.tutor-progress-metrics span{flex:1}}

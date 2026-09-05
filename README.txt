@@ -1,6 +1,6 @@
-LEARNOVA GH — FINAL MASTER BUILD
+LEARNOVA GH — AI TUTOR 7.0 BUILD — NO WELCOME PAGE
 
-This consolidated release combines the learning platform features into one build: AI Tutor 6.0, AI Exam 2.0, Adaptive Practice 2.0, textbook lessons, practical examples, class-aware progressive difficulty, revision, saved lessons, achievements, study plan, reports, school portal, search, voice, mobile/PWA support and the Learning Command Center dashboard.
+This consolidated release combines the learning platform features into one build: AI Tutor 7.0, AI Exam 3.0, Adaptive Practice 2.0, textbook lessons, practical examples, class-aware progressive difficulty, revision, saved lessons, achievements, study plan, reports, school portal, search, voice, mobile/PWA support and the Learning Command Center dashboard.
 
 AI cloud provider is optional. Without provider credentials, the app uses local tutor/practice fallbacks. For production, use a managed database, persistent sessions, HTTPS, backups, rate limiting and server-side secrets.
 
