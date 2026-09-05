@@ -1,1 +1,12 @@
-{"name":"learnova-ai","version":"24.1.0","private":true,"scripts":{"start":"node server.js"},"engines":{"node":">=18"},"description":"Learnova GH AI learning public release"}
+{
+  "name": "learnova-ai",
+  "version": "30.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "description": "Learnova GH AI learning public release"
+}

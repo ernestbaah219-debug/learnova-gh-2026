@@ -92,3 +92,8 @@ body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;bac
 .hero-art .float-card{background:rgba(255,255,255,.92);backdrop-filter:blur(10px);color:#17294d;border:1px solid rgba(255,255,255,.5)}
 @media(max-width:1000px){.hero-art{width:280px}}
 @media(max-width:720px){.hero-art{display:none}}
+
+/* Adaptive Practice 2.0 */
+.practice-progress{height:9px;background:rgba(20,35,65,.12);border-radius:20px;overflow:hidden;margin:14px 0 22px}.practice-progress>span{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#7c3aed);border-radius:inherit}.practice-meta{display:flex;gap:10px;flex-wrap:wrap}.practice-choice{font-weight:700;text-align:left}.practice-feedback-box{padding:14px;border-radius:16px;margin-top:16px}.practice-feedback-box.good{background:#ecfdf3;color:#166534}.practice-feedback-box.needs{background:#fff7ed;color:#9a3412}.practice-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.practice-score{font-size:3rem;font-weight:900}
+/* Learnova Final Command Center */
+.final-command-grid .card{min-height:150px}.mini-health{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.mini-health span{background:var(--soft);padding:10px;border-radius:10px;font-size:12px}.mini-health b{display:block;font-size:18px;margin-top:3px}@media(max-width:900px){.final-command-grid{grid-template-columns:1fr!important}.mini-health{grid-template-columns:1fr 1fr 1fr}}
