@@ -200,7 +200,7 @@ function renderQuizQuestion(){const q=state.quiz.topic.questions[state.quiz.inde
 
 
 function renderTutorChat(){const box=$("#tutorChat");if(!box)return;const h=state.tutorHistory||[];box.innerHTML=h.length?h.map(m=>`<div class="chat-bubble ${m.role==='user'?'user':'ai'}"><b>${m.role==='user'?'You':'Learnova AI Tutor'}</b><br>${esc(m.content).replace(/\n/g,'<br>')}</div>`).join(''):'<div class="chat-bubble ai"><b>Learnova AI Tutor</b><br>Ask me a school question and I will answer it directly, then explain the reasoning.</div>';box.scrollTop=box.scrollHeight}
-async function askTutor(){let q=$("#tutorQuestion").value.trim();if(!q){$("#tutorAnswer").textContent="Please type a school question first.";return}let l=$("#tutorLevel").value,s=$("#tutorSubject").value,t=$("#tutorTopic").value.trim();state.tutorHistory.push({role:'user',content:q});renderTutorChat();$("#tutorQuestion").value='';$("#tutorAnswer").innerHTML='<div class="ai-icon">🤖</div><div><b>Thinking…</b><p>Answering your actual question.</p></div>';let endpoint=localStorage.getItem('learnova.aiEndpoint')||'/api/tutor';let answer=null;try{let res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,level:l,subject:s,topic:t,history:state.tutorHistory.slice(-12),mode:state.tutorMode||'adaptive'})});let j=await res.json();answer=j.answer||j.content||j.choices?.[0]?.message?.content||null}catch(e){}if(!answer)answer=genericTutorAnswer(q,l,s,t);state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();$("#tutorAnswer").innerHTML='<div class="ai-icon">🤖</div><div>'+answer+'</div>'}
+async function askTutor(){let q=$("#tutorQuestion").value.trim();if(!q){$("#tutorAnswer").textContent="Please type a school question first.";return}let l=$("#tutorLevel").value,s=$("#tutorSubject").value,t=$("#tutorTopic").value.trim();state.tutorHistory.push({role:'user',content:q});renderTutorChat();$("#tutorQuestion").value='';$("#tutorAnswer").innerHTML='<div class="ai-icon">🤖</div><div><b>Thinking…</b><p>Answering your actual question.</p></div>';let endpoint=localStorage.getItem('learnova.aiEndpoint')||'/api/tutor';let answer=null;try{let res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,level:l,subject:s,topic:t,history:state.tutorHistory.slice(-12),mode:state.tutorMode||'adaptive'})});let j=await res.json();answer=j.answer||j.content||j.choices?.[0]?.message?.content||null}catch(e){}if(!answer){const direct=directTutorKnowledge(q,l,s,t);if(direct)answer=direct;} if(!answer)answer=genericTutorAnswer(q,l,s,t);state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();$("#tutorAnswer").innerHTML='<div class="ai-icon">🤖</div><div>'+answer+'</div>'}
 
 let existing=getUser();setupAuth();if(existing){state.user=existing;state.level=existing.level||state.level;enterApp()}else{$("#auth").classList.remove("hidden")}
 
@@ -275,7 +275,7 @@ function initV11(){
        },0);
      }else{
        const arr=C[r.level]?.[r.subject]||[], idx=arr.findIndex(t=>t.title===r.title);
-       if(idx>=0){openTopic(arr[idx],idx);showPage('learn')}
+       if(idx>=0){showPage('learn');setTimeout(()=>{openLevel(r.level);openSubject(r.level,r.subject);openTopic(arr[idx],idx);setTimeout(()=>document.getElementById('lessonArea')?.scrollIntoView({behavior:'smooth',block:'start'}),120)},40)}
      }
      s.value="";close();
    });
@@ -403,6 +403,12 @@ function genericTutorAnswer(q,l,s,t){
  return `<b>AI Tutor 5.0</b><br><br><b>Answering your question:</b> ${esc(q)}<br><br>I can answer school questions even when no topic is selected. I will identify the concept, explain the answer directly, show the reasoning or calculation, give a practical example and match the explanation to ${esc(l)}.`;
 }
 function initTutor(){fillClasses($('#tutorLevel'));populateTutorSubjects();$('#tutorLevel').onchange=()=>{state.level=$('#tutorLevel').value;populateTutorSubjects()};$('#tutorModeSelect').onchange=()=>{$('#tutorStatus').textContent='AI Tutor 5.0 • '+$('#tutorModeSelect').selectedOptions[0].textContent.replace(/^\S+\s*/,'')};$('#askTutor').onclick=askTutor;$('#clearTutor').onclick=()=>{$('#tutorQuestion').value='';$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>Hi! I\'m your Learnova Tutor.</b><p>Ask me anything about your school work.</p></div>'};$$('.tutor-tips button').forEach(b=>b.onclick=()=>{$('#tutorQuestion').value=b.dataset.q||b.textContent;$('#tutorQuestion').focus()});initTeachMode()}
+function speakTutorAnswer(){
+ const el=$('#tutorAnswer'); if(!el)return;
+ const text=el.innerText||el.textContent||''; if(!text.trim())return;
+ if(!('speechSynthesis' in window)){alert('Text-to-speech is not supported in this browser.');return}
+ window.speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text.replace(/AI Tutor 5\.0/g,'Learnova AI Tutor')); u.lang='en-GH'; u.rate=.92; u.pitch=1; window.speechSynthesis.speak(u);
+}
 async function askTutor(){
  const q=$('#tutorQuestion').value.trim(); if(!q){$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>Ask me a question.</b><p>For example: “What are cells?”</p></div>';return}
  const l=$('#tutorLevel').value||state.level,s=$('#tutorSubject').value||'',t=$('#tutorTopic').value.trim(); state.tutorHistory.push({role:'user',content:q});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>Thinking…</b><p>Answering your actual question.</p></div>';
@@ -412,7 +418,7 @@ async function askTutor(){
  if(localMath) answer=localMath;
  const endpoint=localStorage.getItem('learnova.aiEndpoint')||'/api/tutor';
  if(!answer){try{const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,level:l,subject:s,topic:t,history:state.tutorHistory.slice(-12),mode:state.tutorMode||'adaptive'})});const j=await res.json();answer=j.answer||j.content||j.choices?.[0]?.message?.content||null}catch(e){}}
- if(!answer)answer=genericTutorAnswer(q,l,s,t);state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div>'+answer+'</div>';
+ if(!answer){const direct=directTutorKnowledge(q,l,s,t);if(direct)answer=direct;} if(!answer)answer=genericTutorAnswer(q,l,s,t);state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div>'+answer+'<br><button class="outline speak-answer" type="button">🔊 Read this answer aloud</button></div>'; $('#tutorAnswer').querySelector('.speak-answer')?.addEventListener('click',speakTutorAnswer);
 }
 
 })();
