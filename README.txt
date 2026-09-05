@@ -8,7 +8,7 @@ FEATURES
 - Subjects and topic navigation
 - Exact topic search and direct lesson opening
 - Lessons, examples, practice and quizzes
-- AI Tutor 5.0 interface with optional server-side AI provider
+- AI Tutor 6.0 interface with optional server-side AI provider
 - Progress, revision, saved lessons, study plan and achievements
 - Teacher, parent and school portal demos
 - Installable web app support
@@ -64,7 +64,7 @@ CURRENT LEARNING ENGINE
 - The visible version/beta label has been removed from the student interface.
 - The old top offline wording has been removed from the interface.
 - Curriculum content is expanded by level with class-aware explanations, practical examples, translations and assessment generation.
-- AI Tutor 5.0 uses /api/tutor. For full cloud conversational AI, configure AI_BASE_URL, AI_API_KEY and AI_MODEL on the server. The browser must never contain a private API key.
+- AI Tutor 6.0 uses /api/tutor. For full cloud conversational AI, configure AI_BASE_URL, AI_API_KEY and AI_MODEL on the server. The browser must never contain a private API key.
 - AI Exam creates fresh class-aware questions and records exam mistakes for revision.
 
 Latest reliability/visual update
