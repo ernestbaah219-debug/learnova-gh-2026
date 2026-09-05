@@ -518,3 +518,29 @@ function finishAdaptivePractice(){
 (function initAdaptivePractice(){practicePopulate();$('#startPractice')?.addEventListener('click',startAdaptivePractice);$$('[data-page="practice"]').forEach(x=>x.addEventListener('click',practicePopulate));})();
 
 })();
+
+
+(function(){
+  function closeWelcome(target){
+    document.body.classList.remove('learnova-welcome-open');
+    var w=document.getElementById('welcomeScreen');
+    if(w) w.style.display='none';
+    if(typeof showPage==='function'){
+      try{ showPage(target||'dashboard'); }catch(e){}
+    }
+  }
+  function openWelcome(){
+    document.body.classList.add('learnova-welcome-open');
+    var w=document.getElementById('welcomeScreen');
+    if(w) w.style.display='';
+  }
+  window.closeLearnovaWelcome=closeWelcome;
+  document.addEventListener('DOMContentLoaded',function(){
+    var start=document.getElementById('welcomeStartBtn');
+    var tutor=document.getElementById('welcomeTutorBtn');
+    if(start) start.addEventListener('click',function(){ closeWelcome('dashboard'); });
+    if(tutor) tutor.addEventListener('click',function(){ closeWelcome('tutor'); });
+    var w=document.getElementById('welcomeScreen');
+    if(w && document.body.classList.contains('learnova-welcome-open')) w.style.display='';
+  });
+})();

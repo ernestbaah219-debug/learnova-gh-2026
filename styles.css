@@ -103,3 +103,38 @@ body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;bac
 
 /* Prevent the public welcome section from occupying dashboard space after login */
 .welcome-hero.hidden,.welcome-features.hidden,.welcome-levels.hidden{display:none!important}
+
+/* Final Welcome overlay fix: never occupies dashboard layout space */
+#welcomeHero,
+.welcome-hero,
+.welcome-features,
+.welcome-levels {
+  box-sizing: border-box;
+}
+#welcomeScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  overflow-y: auto;
+  background: #f5f7ff;
+  padding: 24px;
+}
+#welcomeScreen .welcome-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+body.learnova-welcome-open {
+  overflow: hidden !important;
+}
+body.learnova-welcome-open #app {
+  visibility: hidden !important;
+}
+body.learnova-welcome-open #welcomeScreen {
+  visibility: visible !important;
+}
+body:not(.learnova-welcome-open) #welcomeScreen {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  #welcomeScreen { padding: 12px; }
+}
