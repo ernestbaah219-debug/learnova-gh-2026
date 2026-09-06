@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://learnova.ai/sitemap.xml
+
+Sitemap: https://learnova-2wsf.onrender.com/sitemap.xml
