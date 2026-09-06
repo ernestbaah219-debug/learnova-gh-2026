@@ -533,4 +533,67 @@ function finishAdaptivePractice(){
 }
 (function initAdaptivePractice(){practicePopulate();$('#startPractice')?.addEventListener('click',startAdaptivePractice);$$('[data-page="practice"]').forEach(x=>x.addEventListener('click',practicePopulate));})();
 
+/* FINAL RELIABILITY PATCH — offline startup + Tutor voice reliability */
+function setTutorVoiceButton(mode){
+ const b=$('#tutorAnswer .speak-answer'); if(!b)return;
+ if(mode==='loading'){b.disabled=true;b.textContent='⏳ Loading voice…';}
+ else if(mode==='speaking'){b.disabled=false;b.textContent='⏹ Stop reading';}
+ else {b.disabled=false;b.textContent='🔊 Read this answer aloud';}
+}
+function speakTutorAnswer(){
+ const el=$('#tutorAnswer'); if(!el)return;
+ const text=(el.innerText||el.textContent||'').replace(/Read this answer aloud|Stop reading|Loading voice…/gi,'').trim();
+ if(!text)return;
+ if(!('speechSynthesis' in window)){alert('Read aloud is not supported in this browser.');return;}
+ const b=el.querySelector('.speak-answer');
+ if(window.speechSynthesis.speaking){window.speechSynthesis.cancel();setTutorVoiceButton('idle');return;}
+ setTutorVoiceButton('loading');
+ window.speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(text.replace(/AI Tutor 6\.0/g,'Learnova AI Tutor').replace(/AI Tutor 7\.0/g,'Learnova AI Tutor'));
+ u.lang='en-GH';u.rate=.92;u.pitch=1;
+ u.onstart=()=>setTutorVoiceButton('speaking');
+ u.onend=()=>setTutorVoiceButton('idle');
+ u.onerror=()=>setTutorVoiceButton('idle');
+ setTimeout(()=>{try{window.speechSynthesis.speak(u)}catch(e){setTutorVoiceButton('idle')}},120);
+}
+function initTeachMode(){
+ if($('#teachMe'))$('#teachMe').onclick=()=>{state.teach=!state.teach;$('#tutorMode').style.display=state.teach?'block':'none';$('#tutorMode').innerHTML=state.teach?'🎓 <b>Teach Me mode:</b> I’ll teach one step at a time and wait for your answer.':''};
+ if($('#voiceTutor'))$('#voiceTutor').onclick=()=>{
+   const b=$('#voiceTutor'),R=window.SpeechRecognition||window.webkitSpeechRecognition;
+   if(!R){alert('Voice input is not supported in this browser.');return}
+   if(b.dataset.listening==='1')return;
+   const x=new R();b.dataset.listening='1';b.textContent='⏳ Listening…';x.lang='en-GH';x.interimResults=true;x.continuous=false;
+   x.onresult=e=>{let txt='';for(let i=0;i<e.results.length;i++)txt+=e.results[i][0].transcript;$('#tutorQuestion').value=txt};
+   x.onerror=()=>{b.dataset.listening='0';b.textContent='🎙 Speak'};
+   x.onend=()=>{b.dataset.listening='0';b.textContent='🎙 Speak';$('#tutorQuestion').focus()};
+   try{x.start()}catch(e){b.dataset.listening='0';b.textContent='🎙 Speak'}
+ };
+}
+async function askTutor(){
+ const q=$('#tutorQuestion').value.trim();
+ if(!q){$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>Ask me a question.</b><p>Type or use Speak to tell me the exact school question.</p></div>';return}
+ const l=$('#tutorLevel').value||state.level,s=$('#tutorSubject').value||'',t=$('#tutorTopic').value.trim();
+ state.tutorHistory.push({role:'user',content:q});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();
+ $('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>⏳ Thinking…</b><p>Checking the AI Tutor and built-in school knowledge.</p></div>';
+ let answer=null;
+ try{
+   const endpoint=localStorage.getItem('learnova.aiEndpoint')||'/api/tutor';
+   const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),12000);
+   const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({question:q,level:l,subject:s,topic:t,history:state.tutorHistory.slice(-12),mode:state.tutorMode||'adaptive',profile:tutorContext(),instructions:'Act as Learnova AI Tutor 7.0. Answer the actual school question directly. Match the learner class. Explain step by step, define terms, show Maths workings, use examples, correct misconceptions and ask one short check question. If the question is outside the selected topic, still answer it if it is a safe school question. Do not refuse merely because topic is blank.'})});clearTimeout(timer);const j=await res.json();answer=j.answer||j.content||j.choices?.[0]?.message?.content||null;
+ }catch(e){}
+ if(!answer){const math=advancedMathTutor(q,l,s,t);if(math)answer=math}
+ if(!answer){const direct=directTutorKnowledge(q,l,s,t);if(direct)answer=direct}
+ if(!answer){const pack=subjectTutorAnswer(q,l,s,t);if(pack)answer=pack}
+ if(!answer)answer=genericTutorAnswer(q,l,s,t)
+ state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();renderTutorProfile();
+ $('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div>'+answer+'<br><button class="outline speak-answer" type="button">🔊 Read this answer aloud</button></div>';
+ $('#tutorAnswer .speak-answer').onclick=speakTutorAnswer;
+}
+function installOfflineReliability(){
+ const set=()=>document.body.classList.toggle('learnova-offline',navigator.onLine===false);
+ set();window.addEventListener('online',set);window.addEventListener('offline',set);
+ if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
+installOfflineReliability();
+
 })();
