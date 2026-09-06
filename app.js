@@ -1,4 +1,4 @@
-const LEARNOVA_VERSION="Learnova-AI-Release";
+const LEARNOVA_VERSION="Learnova-AI-Final-All-Updates";
 
 (()=>{"use strict";
 const C=window.LEARNOVA_CURRICULUM||{},levels=Object.keys(C),$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -588,6 +588,59 @@ async function askTutor(){
  state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat();renderTutorProfile();
  $('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div>'+answer+'<br><button class="outline speak-answer" type="button">🔊 Read this answer aloud</button></div>';
  $('#tutorAnswer .speak-answer').onclick=speakTutorAnswer;
+}
+async function askTutor(){
+ const q=$('#tutorQuestion').value.trim();
+ if(!q){$('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>Ask me a question.</b><p>Type a school question or use Speak.</p></div>';return}
+ const l=$('#tutorLevel').value||state.level||'JHS 2',s=$('#tutorSubject').value||'General',t=$('#tutorTopic').value.trim();
+ state.tutorHistory.push({role:'user',content:q});state.tutorHistory=state.tutorHistory.slice(-12);renderTutorChat?.();
+ $('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div><b>⏳ Thinking…</b><p>Checking Learnova AI and built-in school knowledge.</p></div>';
+ let answer=null, lastError='';
+ const payload={question:q,level:l,subject:s,topic:t,history:state.tutorHistory.slice(-12),mode:state.tutorMode||'adaptive',profile:tutorContext(),instructions:'Act as Learnova AI Tutor 7.0. Answer the actual school question directly. Match the learner class. Explain step by step, define terms, show Maths workings, use examples, correct misconceptions and ask one short check question. If the question is outside the selected topic but is a safe school question, still answer it.'};
+ const endpoint=localStorage.getItem('learnova.aiEndpoint')||'/api/tutor';
+ for(let attempt=0;attempt<2&&!answer;attempt++){
+   try{
+     const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),9000);
+     const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify(payload)});
+     clearTimeout(timer);
+     const raw=await res.text();let j={};try{j=raw?JSON.parse(raw):{}}catch{}
+     answer=j.answer||j.content||j.choices?.[0]?.message?.content||null;
+     if(!res.ok)lastError='AI service returned '+res.status;
+   }catch(e){lastError=e?.name==='AbortError'?'AI request timed out':'AI connection unavailable'}
+ }
+ if(!answer){answer=advancedMathTutor?.(q,l,s,t)||null}
+ if(!answer){answer=directTutorKnowledge?.(q,l,s,t)||null}
+ if(!answer){answer=subjectTutorAnswer?.(q,l,s,t)||null}
+ if(!answer){answer=generalSchoolTutorFallback(q,l,s,t)}
+ state.tutorHistory.push({role:'assistant',content:String(answer).replace(/<[^>]+>/g,' ')});state.tutorHistory=state.tutorHistory.slice(-12);
+ renderTutorChat?.();renderTutorProfile?.();
+ const offline=navigator.onLine===false;
+ const note=offline||lastError?`<small style="display:block;margin-top:10px;opacity:.75">${offline?'Offline mode: ':''}Using Learnova built-in learning support.</small>`:'';
+ $('#tutorAnswer').innerHTML='<div class="ai-icon">🤖</div><div>'+answer+note+'<br><button class="outline speak-answer" type="button">🔊 Read this answer aloud</button></div>';
+ $('#tutorAnswer .speak-answer').onclick=speakTutorAnswer;
+}
+function generalSchoolTutorFallback(q,l,s,t){
+ const x=q.trim(), low=x.toLowerCase();
+ if(/^(hi|hello|hey)\b/.test(low))return `<b>AI Tutor 7.0</b><br><br>Hello! I’m ready to help with ${esc(l)} school work. Ask me the exact question and I’ll explain it step by step.`;
+ if(/\b(what is|define|meaning of)\b/.test(low)){
+   const term=x.replace(/.*?\b(what is|define|meaning of)\b\s*/i,'').replace(/[?!.]+$/,'').trim();
+   if(term)return `<b>AI Tutor 7.0 • Definition</b><br><br><b>${esc(term)}</b> is a concept whose meaning depends on its subject and context. I don’t want to invent a definition without enough context.<br><br>Selected subject: <b>${esc(s)}</b>. Tell me the chapter or give one sentence of context and I’ll explain it at your class level.`;
+ }
+ if(/\b(why|how|explain)\b/.test(low))return `<b>AI Tutor 7.0</b><br><br>Here is how we will solve it: first identify the main idea, then use the information given, explain each step, and finally check the result. Your question is <b>${esc(x)}</b>.<br><br>Give me any numbers, diagram details, or answer choices included in the question so I can work through the exact problem.`;
+ return `<b>AI Tutor 7.0 • ${esc(l)} • ${esc(s)}</b><br><br>I can help with this school question: <b>${esc(x)}</b>.<br><br>I’ll use your class level and selected subject, and I can show workings, examples, definitions, or practice questions. If this is a specific exercise, include the full question and any information shown with it so I can solve the exact problem.`;
+}
+function initTeachMode(){
+ if($('#teachMe'))$('#teachMe').onclick=()=>{state.teach=!state.teach;$('#tutorMode').style.display=state.teach?'block':'none';$('#tutorMode').innerHTML=state.teach?'🎓 <b>Teach Me mode:</b> I’ll teach one step at a time and wait for your answer.':''};
+ if($('#voiceTutor'))$('#voiceTutor').onclick=()=>{
+   const b=$('#voiceTutor'),R=window.SpeechRecognition||window.webkitSpeechRecognition;
+   if(!R){alert('Voice input is not supported in this browser.');return}
+   if(b.dataset.listening==='1')return;
+   const x=new R();b.dataset.listening='1';b.disabled=true;b.textContent='⏳ Listening…';x.lang='en-GH';x.interimResults=true;x.continuous=false;
+   x.onresult=e=>{let txt='';for(let i=0;i<e.results.length;i++)txt+=e.results[i][0].transcript;$('#tutorQuestion').value=txt};
+   x.onerror=()=>{b.dataset.listening='0';b.disabled=false;b.textContent='🎙 Speak'};
+   x.onend=()=>{b.dataset.listening='0';b.disabled=false;b.textContent='🎙 Speak';$('#tutorQuestion').focus()};
+   try{x.start()}catch(e){b.dataset.listening='0';b.disabled=false;b.textContent='🎙 Speak'}
+ };
 }
 function installOfflineReliability(){
  const set=()=>document.body.classList.toggle('learnova-offline',navigator.onLine===false);

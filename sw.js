@@ -1,5 +1,5 @@
-const CACHE="learnova-ai-v32-reliable";
-const CORE=["./","./index.html","./styles.css","./app.js","./curriculum.js","./curriculum_expansion.js","./content_upgrade.js","./manifest.json","./icon.svg","./privacy.html","./terms.html","./404.html"];
+const CACHE="learnova-ai-v34-production-final";
+const CORE=["./","./index.html","./styles.css","./app.js","./curriculum.js","./curriculum_expansion.js","./content_upgrade.js","./manifest.json","./icon.svg","./privacy.html","./terms.html","./404.html","./data.json"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener("fetch",e=>{

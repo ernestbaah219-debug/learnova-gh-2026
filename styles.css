@@ -100,3 +100,7 @@ body::after{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;bac
 
 .tutor-progress{display:flex;justify-content:space-between;gap:18px;align-items:center;margin:14px 0;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 8px 24px rgba(30,40,80,.06)}
 .tutor-progress>div:first-child{flex:1}.tutor-progress b{display:block}.tutor-progress span{display:block;color:var(--muted);font-size:.9rem;margin-top:4px}.tutor-progress-metrics{display:flex;gap:12px}.tutor-progress-metrics span{min-width:72px;text-align:center;padding:9px 10px;border-radius:12px;background:var(--soft)}.tutor-progress-metrics b{font-size:1.1rem;color:var(--text)}.tutor-progress-metrics small{font-size:.72rem}@media(max-width:700px){.tutor-progress{display:block}.tutor-progress-metrics{margin-top:12px}.tutor-progress-metrics span{flex:1}}
+/* FINAL ALL-UPDATES RELIABILITY UI */
+.learnova-connection{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:100000;display:none;max-width:calc(100% - 28px);padding:10px 16px;border-radius:999px;background:#20263a;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.15);font-size:13px;font-weight:700;text-align:center}
+body.learnova-offline .learnova-connection{display:block}
+.tutor-voice-loading{opacity:.75;cursor:wait}

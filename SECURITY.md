@@ -10,3 +10,12 @@ This package is a launch candidate, not a claim of production security certifica
 - Add account recovery, session expiry/revocation and audit logging before a real school deployment.
 - Review privacy, retention, consent and access-control requirements before onboarding minors.
 - Limit teacher/admin access to school-authorized accounts.
+
+
+## Production hardening in this build
+- API request rate limiting and bounded request bodies
+- Expiring server sessions
+- Safer static-file path resolution
+- Security response headers and CSP
+- Server-side question length limits
+- API secrets remain server-side environment variables
